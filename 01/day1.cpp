@@ -22,25 +22,25 @@ int apply_delta(const int original_value, const int delta) {
     return wrapped_value < 0 ? wrapped_value + 100 : wrapped_value;
 }
 
-int apply_delta2(int *mut_value, const int delta) {
-    const int prev = *mut_value;
+int apply_delta2(int &mut_value, const int delta) {
+    const int prev = mut_value;
     int seen_zero = abs(delta) / 100; // initial wraps
-    *mut_value += delta % 100;
+    mut_value += delta % 100;
 
     int wrapped_times = 0;
-    while (*mut_value > 99) {
-        *mut_value -= 100;
+    while (mut_value > 99) {
+        mut_value -= 100;
         wrapped_times++;
     }
 
-    while (*mut_value < 0) {
-        *mut_value += 100;
+    while (mut_value < 0) {
+        mut_value += 100;
         wrapped_times++;
     }
 
-    if (*mut_value != 0 && prev != 0) {
+    if (mut_value != 0 && prev != 0) {
         seen_zero += wrapped_times;
-    } else if (*mut_value == 0) {
+    } else if (mut_value == 0) {
         seen_zero++;
     }
 
@@ -57,7 +57,7 @@ int part1(const std::string &filename) {
     while (std::getline(file, line)) {
         const int delta = parse_instruction(line);
         // result = apply_delta(result, delta);
-        apply_delta2(&result, delta);
+        apply_delta2(result, delta);
         // std::cout << "result:" << result << std::endl;
         if (result == 0) {
             seen_zero++;
@@ -77,7 +77,7 @@ int part2(const std::string &filename) {
     std::string line;
     while (std::getline(file, line)) {
         const int delta = parse_instruction(line);
-        seen_zero += apply_delta2(&result, delta);
+        seen_zero += apply_delta2(result, delta);
     }
 
     return seen_zero;
